@@ -1,19 +1,24 @@
-const express = require("express")
-const app = express()
+// Installera först:
+// npm init -y
+// npm install express cors
 
-app.use(express.json())
+const express = require("express");
+const cors = require("cors");
+const app = express();
 
-let trains = []
+// ✅ Aktivera CORS så att GitHub Pages eller andra webbplatser kan läsa API
+app.use(cors());
 
-app.post("/trains", (req, res) => {
-    trains = req.body
-    res.sendStatus(200)
-})
+// Exempeldata: Byt ut eller lägg till fler tåg här
+let trains = [
+    { id: "Test", x: 1508.2485, z: -2206.5456 }
+];
 
+// Endpoint som returnerar tågdata
 app.get("/trains", (req, res) => {
-    res.json(trains)
-})
+    res.json(trains);
+});
 
-app.listen(3000, () => {
-    console.log("Running")
-})
+// Port från Render eller lokal default
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
