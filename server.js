@@ -1,42 +1,55 @@
-// server.js
+// server.js – stabil version för Render
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
+const fs = require('fs').promises; // async version
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// Läsa/skriva JSON-fil som backup
 const DATA_FILE = './trains.json';
 
-// Initiera trains
+// Initiera trains från fil (om filen finns)
 let trains = [];
-if (fs.existsSync(DATA_FILE)) {
+(async () => {
     try {
-        trains = JSON.parse(fs.readFileSync(DATA_FILE));
-    } catch(e){ trains = []; }
-}
+        const content = await fs.readFile(DATA_FILE, 'utf8');
+        trains = JSON.parse(content);
+        console.log("Laddade tågdata från fil.");
+    } catch(e) {
+        console.log("Ingen tidigare tågdata hittad, startar med tom lista.");
+        trains = [];
+    }
+})();
 
 // POST från Roblox
-app.post('/trains', (req, res) => {
-    const data = req.body;
-    if (!Array.isArray(data)) return res.status(400).json({ error: "Skickade inte en lista" });
+app.post('/trains', async (req, res) => {
+    try {
+        const data = req.body;
+        if (!Array.isArray(data)) return res.status(400).json({ error: "Skickade inte en lista" });
 
-    trains = data;
+        trains = data;
 
-    // Skriv till fil (backup)
-    fs.writeFile(DATA_FILE, JSON.stringify(trains), (err) => {
-        if (err) console.warn("Kunde inte spara data: ", err);
-    });
+        // Skriv till fil (backup)
+        await fs.writeFile(DATA_FILE, JSON.stringify(trains));
+        console.log("Uppdaterade tågdata:", trains.length, "tåg");
 
-    res.json({ status: "ok" });
+        res.json({ status: "ok" });
+    } catch (err) {
+        console.error("Fel vid POST /trains:", err);
+        res.status(500).json({ error: "Serverfel" });
+    }
 });
 
 // GET för webbkartan
 app.get('/trains', (req, res) => {
-    res.json(trains);
+    try {
+        res.json(trains);
+    } catch (err) {
+        console.error("Fel vid GET /trains:", err);
+        res.status(500).json({ error: "Serverfel" });
+    }
 });
 
 app.listen(PORT, () => console.log(`Servern körs på port ${PORT}`));
