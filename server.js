@@ -1,36 +1,31 @@
-
-const express = require("express");
-const cors = require("cors");
-
+// server.js
+const express = require('express');
+const cors = require('cors');
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-
-app.use(express.json());
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-
+// Temporär datalagring (i minnet)
 let trains = [];
 
+// POST från Roblox
+app.post('/trains', (req, res) => {
+    const data = req.body;
 
-app.post("/trains", (req, res) => {
-    trains = req.body;
-    console.log("Received trains:", trains);
-    res.sendStatus(200);
+    // Enkel validering
+    if (!Array.isArray(data)) return res.status(400).send("Skickade inte en lista");
+    trains = data; // uppdatera senaste tågpositioner
+    res.send({status:"ok"});
 });
 
-
-app.get("/trains", (req, res) => {
+// GET för webbkartan
+app.get('/trains', (req, res) => {
     res.json(trains);
 });
 
-
-app.get("/", (req, res) => {
-    res.send("Train API is running 🚆");
-});
-
-
-const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Servern körs på port ${PORT}`);
 });
