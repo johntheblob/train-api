@@ -5,20 +5,22 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors());               // Tillåt GET/POST från webben
+app.use(express.json());       // JSON body parsing
 
-// Temporär datalagring (i minnet)
+// Lagra senaste tågdata i minnet
 let trains = [];
 
 // POST från Roblox
 app.post('/trains', (req, res) => {
     const data = req.body;
 
-    // Enkel validering
-    if (!Array.isArray(data)) return res.status(400).send("Skickade inte en lista");
-    trains = data; // uppdatera senaste tågpositioner
-    res.send({status:"ok"});
+    if (!Array.isArray(data)) {
+        return res.status(400).json({ error: "Skickade inte en lista" });
+    }
+
+    trains = data; // uppdatera senaste positioner
+    return res.json({ status: "ok" });
 });
 
 // GET för webbkartan
@@ -26,6 +28,7 @@ app.get('/trains', (req, res) => {
     res.json(trains);
 });
 
+// Starta servern
 app.listen(PORT, () => {
     console.log(`Servern körs på port ${PORT}`);
 });
