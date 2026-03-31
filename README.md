@@ -1,3 +1,5 @@
 # train-api
-miAPI is a opensource project by johntheblob. This system has train map via online site. This also offer a guide how to use it with Noodle The Developer's V2 Advanced Train System.
-
+train-api or wait, miAPI mainly used as in the name train API, and can be customized to your own likings. Its made to work with opensource devekioer
+Noodle The Developer's V2 Advanced Train System.
+(Part 1 Tutorial)
+[https://youtu.be/TJGJKtJoei8?si=E4EHVwCo-qoV5HZH]
