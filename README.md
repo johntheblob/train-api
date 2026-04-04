@@ -7,3 +7,5 @@ Disclaimer... The guide is not provided yet. This system is mainly focusing to b
 
 
 **DO NOTE THAT THE SYSTEM IS CURRENTLY NOT FINISHED AND HAS SOME BUGGS. AS I AM NOT WORKING ALL DAY ON TRAIN-API**
+
+And cannot be claimed as a personal system. You don't claim this as yours then chill.
